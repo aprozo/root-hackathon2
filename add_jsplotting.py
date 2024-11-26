@@ -1,4 +1,15 @@
 import os
+# /// \file
+# /// \ingroup tutorial_hist
+# /// \notebook
+# /// \preview
+# /// Example showing how to combine the various candle plot options.
+# ///
+# /// \macro_image (tcanvas_js)
+# /// \macro_code
+# ///
+# /// \author Georg Troska
+
 
 def list_files(dir):
     r = []
@@ -6,7 +17,19 @@ def list_files(dir):
         for name in files:
             r.append(os.path.join(root, name))
     return r
+
+
+def add_preview_line(comment_prefix, lines):
+    preview_line = '\\preview'
+    line_before='\\notebook'
+    if preview_line not in lines:
+        for i, line in enumerate(lines):
+            if line.strip() == f'{comment_prefix} {line_before}':
+                lines.insert(i+1, f'{comment_prefix} {preview_line}\n')
+                return lines
+    return lines
     
+
 
 def add_or_update_macro_image_to_files(folder_path):
     """
@@ -56,6 +79,10 @@ def add_or_update_macro_image_to_files(folder_path):
                         modified = True
                     else:
                         new_lines.append(line)
+
+                # Add a preview line if it doesn't exist
+                new_lines = add_preview_line(comment_prefix, new_lines)
+
                 
                 # Write changes back to the file if modified
                 if modified:
@@ -64,5 +91,5 @@ def add_or_update_macro_image_to_files(folder_path):
                         file.writelines(new_lines)
 
 # Example usage
-folder_path = './'  # Replace with the path to your folder
+folder_path = './test'  # Replace with the path to your folder
 add_or_update_macro_image_to_files(folder_path)
