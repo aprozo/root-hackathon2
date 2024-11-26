@@ -34,20 +34,23 @@ def add_preview_line(comment_prefix, lines):
         # skip if preview command is already present
         if line.strip().startswith(preview_key):
             return lines
-        
+        # skip if the line is not in the file block
+
+         # check if the the line is not empty (withouth the comment prefix)
+        line_without_comment = line.split(comment_prefix)[1]
+
+
         if line.startswith(begin_line):
             in_file_block = True
-
-        elif line.startswith(preview_command):
-            return lines
             
         elif in_file_block and line.startswith(end_line):
-            # add empty preview
+            # add empty preview command line before the end
             lines.insert(i,   preview_command + '\n')
             return lines
-        elif in_file_block and not line.startswith(f'{comment_prefix} \\'):
+       
+        
+        elif in_file_block and not line_without_comment.startswith('\\') and not line_without_comment.strip() == '':
             # add preview command to the begining of the line
-            line_without_comment = line.split(comment_prefix)[1]
             modified_line = preview_command + ' ' + line_without_comment
             lines[i] = modified_line            
             return lines
